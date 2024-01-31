@@ -45,7 +45,7 @@ h2
 
 #Back
 {
-    background-color: rgb(207, 207, 207);
+    background: repeating-linear-gradient(to top, #fffbd6, #fffbd6 6px, #fffde5 6px, #fffde5 20px);
     margin-top: 20px;
     margin-left: 20px;
     margin-right: 20px;
