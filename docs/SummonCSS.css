@@ -2,6 +2,7 @@ body
 {
     font-size: 24px;
     text-align: center;
+    background: repeating-linear-gradient(to top, #fffbd6, #fffbd6 6px, #fffde5 6px, #fffde5 20px);
 }
 
 .smallpicture
