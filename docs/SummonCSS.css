@@ -18,39 +18,36 @@ body
     background: repeating-linear-gradient(to top, #fffbd6, #fffbd6 6px, #fffde5 6px, #fffde5 20px);
 }
 
-.smallpicture
+.check
 {
-    margin: 200px;
-    width: 680px;
+    margin-right: auto;
+    margin-left: auto;
+    width: 1400px;
+    height: 200px;
+    background: linear-gradient(45deg, #b2dafa 25%, transparent 25%, transparent 75%, #b2dafa 75%),
+                linear-gradient(45deg, #b2dafa 25%, transparent 25%, transparent 75%, #b2dafa 75%);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+    background-color: rgb(66, 125, 143) ;
+    border-width: 10px;
+    border-style: solid;
+    border-color: rgb(66, 125, 143);
 }
-h1
+.board
 {
-    background-color: rgb(255, 255, 255);
-    margin-left: 10px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: auto;
+    width: 1420px;
+    background-color: rgb(66, 125, 143) ;
 }
-h2
+.title
 {
-    background-color: blanchedalmond;
-    margin-left: 30px;
-    margin-right: 30px;
+    width: 1420px;
+    text-align: center;
+    background-color: black;
+    color: white;
 }
-#box
-{
-    width: 350px;
-    height: 180px;
-    padding: 30px;
-    border: 1px solid rgb(0, 162, 255);
-    background-color: rgb(210, 232, 247);
-    margin-left: 700px;
-    margin-bottom: 10px;
-}
-
-#box li
-{
-    margin-top: 2px;
-    margin-left: 40px;
-}
-
 .test
 {
     margin-top: 800px;
@@ -64,80 +61,4 @@ h2
     margin-right: 20px;
     margin-bottom: 20px;
 }
-#AI
-{
-    color: tomato;
-    font-size: 120px;
-}
-#Scroll1
-{
-    margin-top: 50px;
-    margin-bottom: 50px;
-    margin-left: 700px;
-    text-align: left;
-    transition: .5s;
-    opacity: 0;
-    z-index:-1;
-}
-#Scroll2
-{
-    margin-top: 50px;
-    margin-bottom: 50px;
-    margin-left: 700px;
-    text-align: left;
-    text-decoration: none;
-    transition: .5s;
-    opacity: 0;
-    z-index:-1;
-}
-#Scroll3
-{
-    margin-top: 50px;
-    margin-bottom: 50px;
-    margin-left: 700px;
-    text-align: left;
-    text-decoration: none;
-    transition: .5s;
-    opacity: 0;
-    z-index:-1;
-}
-#Scroll4
-{
-    margin-top: 50px;
-    margin-bottom: 50px;
-    margin-left: 700px;
-    text-align: left;
-    text-decoration: none;
-    transition: .5s;
-    opacity: 0;
-    z-index:-1;
-}
-.bigfont
-{
-    font-size: 32px;
-}
-#NearFuture
-{
-    width: 1920px;
-    margin-left: -30px;
-}
-#warp0
-{
 
-}
-#warp1
-{
-
-}
-#warp2
-{
-
-}
-#warp3
-{
-
-}
-#warp4
-{
-
-}
