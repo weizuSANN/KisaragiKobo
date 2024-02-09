@@ -1,4 +1,4 @@
-.for-pc
+/* .for-pc
 {
     display: block;
 }
@@ -10,7 +10,7 @@
 {
     .for-pc { display: none; }
     .for-sp { display: block; }
-}
+} */
 body
 {
     font-size: 24px;
