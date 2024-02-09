@@ -33,26 +33,45 @@ body
     border-style: solid;
     border-color: rgb(66, 125, 143);
 }
-.board
+.title
 {
     margin-right: auto;
     margin-left: auto;
-    margin-bottom: auto;
-    width: 1420px;
-    background-color: rgb(66, 125, 143) ;
-}
-.title
-{
     width: 1420px;
     text-align: center;
     background-color: black;
     color: white;
 }
+
 .test
 {
     margin-top: 800px;
 }
-
+.backcolor1
+{
+    margin-right: auto;
+    margin-left: auto;
+    background-color: #b2dafa;
+    width: 1416px;
+}
+.backcolor2
+{
+    text-align: left;
+    background-color: white;
+    margin-top: auto;
+    margin-right: auto;
+    margin-left: auto;
+    width: 1400px;
+}
+.backcolor3
+{
+    text-align: left;
+    background-color: rgb(177, 177, 177);
+    margin-top: auto;
+    margin-right: auto;
+    margin-left: auto;
+    width: 1350px;
+}
 #Back
 {
     background: repeating-linear-gradient(to top, #fffbd6, #fffbd6 6px, #fffde5 6px, #fffde5 20px);
@@ -62,3 +81,71 @@ body
     margin-bottom: 20px;
 }
 
+.board
+{
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: auto;
+    text-align: center;
+    width: 1420px;
+    background-color: rgb(66, 125, 143) ;
+}
+.textleft
+{
+    text-align: left;
+}
+.text
+{
+    margin-left: 25px;
+}
+.nextline
+{
+    height: 1px;
+}
+.redtext
+{
+    color: red;
+}
+
+#works
+{
+
+}
+#things
+{
+
+}
+#env
+{
+
+}
+#msg
+{
+
+}
+#prof
+{
+
+}
+#link
+{
+
+}
+
+code
+{
+    padding: 0.2em 0.3em;   /* 内側の余白 */
+    margin: 0 0.2em;    /* 外側の余白 */
+    border-radius: 5px; /* 角の丸み */
+    background: #f1f2f3;    /* 背景色 */
+    color: #404040; /* 文字色 */
+    font-size: 0.9em;   /* 文字サイズ */
+}
+pre
+{
+    padding: 1em;　/* 内側の余白 */
+    margin: 0 0 1.5em;　/* 外側の余白 */
+    border: solid 1px #eaedf2;　/* 枠線 */
+    background: #f3f6fc;　/* 背景色 */
+    color: #54687c;　/* 文字色 */
+}
