@@ -49,7 +49,7 @@ digitalWrite(CS , HIGH);//CSをHIGH
 data = SPI.transfer(0x00);//0x00を送り（つまりダミーデータを送る）受信
 SPI.transfer(0x29);//送信
 digitalWrite(CS , LOW);
-SPI.endTransaction();</p>
+SPI.endTransaction();</textarea></p>
                                 <p>例としては上の通りですね。実際にはRaspberry Pi PicoだとsetTXだのsetRXだの面倒なのがあるのですがそれは後で説明します。</p>
                             </div>
                         </div>
@@ -108,7 +108,7 @@ void ChipSelect(int CSPin)
 {
   pinMode(CSPin , OUTPUT);
   digitalWrite(CSPin, HIGH);
-}</p>
+}</textarea></p>
                                 <p>先ほども言ったように、Raspberry Pi PicoのSPI通信にはめんどくさい仕様が多くあります。SPISettingsのインスタンスを作成しないといけなかったり、setTX , setRXでSPI通信に使うピン設定したり。</p>
                                 <p>プログラマーはプログラムで語れという言葉に従って、詳しい説明は省きます。ADC関数の引数を0~7で変更することで、チャンネルを変更できます。気分が載ったらプログラムの解説も載せます。</p>
                             </div>
