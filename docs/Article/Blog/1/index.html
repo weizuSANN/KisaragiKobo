@@ -44,7 +44,7 @@
                                 <!--div class="nextline"></div-->
                                 <p>仕組みとしては、CSで信号の送受信をできるようにしてから、SCKで同期しつつ通信を行います。え？説明になってないって？ほかのサイト見て勉強してください。</p>
                                 <p>SPIの通信は、送信と受信が同時に行われます。プログラムのイメージ的には、先輩の許可が下りて(beginTransaction)倉庫のシャッター(CS)が開いたら(HIGHになったら)、相手との銃撃戦(通信がはじまり、相手からも撃たれる(相手からの送信)、自分も撃つ(自分からの送信))が始まる。倉庫のシャッターを閉めて(CSをLOWにする)、先輩が終了の宣言をする(endTransaction)</p>
-                                <p><textarea name="waylink" cols="200" rows="15" readonly class="copyonlyTextarea">SPI.beginTransaction();//SPI通信開始
+                                <p><textarea name="waylink" cols="180" rows="6" readonly class="copyonlyTextarea">SPI.beginTransaction();//SPI通信開始
 digitalWrite(CS , HIGH);//CSをHIGH
 data = SPI.transfer(0x00);//0x00を送り（つまりダミーデータを送る）受信
 SPI.transfer(0x29);//送信
@@ -67,10 +67,10 @@ SPI.endTransaction();</textarea></p>
                                 <p>次の1byteは送信なしです。受信するだけ。</p>
                                 <p>Start、SGL/DIFについては説明しましたが、D2、D1、D0が行っているのは、2進数で0~7を送ることです。</p>
                                 <p>送る信号がわかったところで、次は配線をしていきましょう。</p>
-                                <img src="MainMaterials/MCP3208PinSet.png">
+                                <img src="MainMaterials/MCP3208PinSet.png" width="800px">
                                 <p>配線図が他所と比べて貧乏イラストなのは、配線ツールを使うのがめんどくさかったからです。うまくこちらの心意を読み取って配線してください。</p>
                                 <p>みなさんお待ちかねのプログラムです。</p>
-                                <p><textarea name="waylink" cols="200" rows="20" readonly class="copyonlyTextarea"></textarea>#include <SPI.h>
+                                <p><textarea name="waylink" cols="180" rows="20" readonly class="copyonlyTextarea">#include <SPI.h>
 SPISettings settings(1000000 , MSBFIRST , SPI_MODE0);
 
 void setup()
