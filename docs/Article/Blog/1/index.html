@@ -31,222 +31,89 @@
                     </tr>
                 </table>
                 <div class="title">
-                    ■　めいん　■
+                    ■　MCP3208をRaspberry Pi Picoで動かす【Arduino IDE】　■
                 </div>
                 <div class="board">
                     <div class="backcolor1">
-                        <table width="1400px">
-                            <tr>
-                                <td>
-                                    <h3>▼当サイトについて</h3>
-                                </td>
-                                <td>
-                                    <a href="#works">▼仕事
-                                </td>
-                                <td>
-                                    <a href="#things">▼何をしているか</a>
-                                </td>
-                                <td>
-                                    <a href="#env">▼作業環境</a>
-                                </td>
-                                <td>
-                                    <a href="#msg">▼連絡</a>
-                                </td>
-                                <td>
-                                    <a href="#prof">▼プロフィール</a>
-                                </td>
-                                <td>
-                                    <a href="#link">▼リンク</a>
-                                </td>
-                            </tr>
-                        </table>
+                        <h3>
+                            SPI通信について。
+                        </h3>
                         <div class="backcolor2">
                             <div class="text">
-                                <p>■ 当サイト（きさらぎ工房）は、きさらぎがGithubPagesの機能を利用して作ったサイトです。</p>
-                                <div class="nextline"></div>
-                                <p>・主な投稿内容は作業内容の報告、検証、やってみたことの説明などです。</p>
-                                <p>・活動内容は、プログラム～音楽まで様々です。その日の気分によって変わります。</p>
-                                <p>・当サイトの情報は自由に使っていただいて結構です。</p>
-                                <div class="redtext"><p>以上を踏まえたうえで、発生した問題等は自己責任でお願いいたします。</p></div>
+                                <p>SPI通信は、基本 MISO(Master In Slave Out、UARTでいうところのマスター側RX) , MOSI(Master Out Slave In、UARTでいうところのTXマスター) , SCK(SPI ClocK、I2CでいうところのSCL)、CS(Chip Select、I2Cでいうところのアドレス)の4つのピンで構成されます。</p>
+                                <!--div class="nextline"></div-->
+                                <p>仕組みとしては、CSで信号の送受信をできるようにしてから、SCKで同期しつつ通信を行います。え？説明になってないって？ほかのサイト見て勉強してください。</p>
+                                <p>SPIの通信は、送信と受信が同時に行われます。プログラムのイメージ的には、先輩の許可が下りて(beginTransaction)倉庫のシャッター(CS)が開いたら(HIGHになったら)、相手との銃撃戦(通信がはじまり、相手からも撃たれる(相手からの送信)、自分も撃つ(自分からの送信))が始まる。倉庫のシャッターを閉めて(CSをLOWにする)、先輩が終了の宣言をする(endTransaction)</p>
+                                <p><textarea name="waylink" cols="50" rows="6" readonly class="copyonlyTextarea">SPI.beginTransaction();//SPI通信開始
+digitalWrite(CS , HIGH);//CSをHIGH
+data = SPI.transfer(0x00);//0x00を送り（つまりダミーデータを送る）受信
+SPI.transfer(0x29);//送信
+digitalWrite(CS , LOW);
+SPI.endTransaction();</p>
+                                <p>例としては上の通りですね。実際にはRaspberry Pi PicoだとsetTXだのsetRXだの面倒なのがあるのですがそれは後で説明します。</p>
                             </div>
                         </div>
 
-                        <div class="textleft"><div class="text"><div class="text"><div class="text"><h3 id="works">▼仕事</h3></div></div></div></div>
+                        <div class="textleft"><div class="text"><div class="text"><div class="text"><h3>▼本題</h3></div></div></div></div>
 
                         <div class="backcolor2">
                             <div class="text">
-                                <p>仕事はしていません。働きたくありません。</p>
+                                <p>MCP3208というのは、SPI通信で値を引き渡すADコンバーターです。</p>
+                                <img src="MainMaterials/DataSheet.jpg">
+                                <p>上記は、MCP3208のデータシートに載っている送信データです。これを1byte(8bit)に区切ってみると、以下のようになります。</p>
+                                <img src="MainMaterials/DataSheet2.jpg">
+                                <p>はい。最初の1byteは5bitスレーブ（MCP3208）にnullを送って、Start（開始なら1、しないなら0を送信）、SGL/DIF(シングル（GNDとアナログ入力の差）、疑似差動入力（二つのチャンネルを+、-として、その差をデータとして送信。主に音楽などで使われるらしい。）)、D2（0~3チャンネルの入力を受けたいなら0、4~7チャンネルの入力を受けたいなら1）の計3bitを送信します。また、これはD2のデータが帰ってくるので変数に格納しておきます。</p>
+                                <p>次の1byteはD1、D0、残り6bitはnullを送信します。また、スレーブからデータを受信します。</p>
+                                <p>次の1byteは送信なしです。受信するだけ。</p>
+                                <p>Start、SGL/DIFについては説明しましたが、D2、D1、D0が行っているのは、2進数で0~7を送ることです。</p>
+                                <p>送る信号がわかったところで、次は配線をしていきましょう。</p>
+                                <img src="MainMaterials/MCP3208PinSet.png">
+                                <p>配線図が他所と比べて貧乏イラストなのは、配線ツールを使うのがめんどくさかったからです。うまくこちらの心意を読み取って配線してください。</p>
+                                <p>みなさんお待ちかねのプログラムです。</p>
+                                <p><textarea name="waylink" cols="50" rows="6" readonly class="copyonlyTextarea"></textarea>#include <SPI.h>
+SPISettings settings(1000000 , MSBFIRST , SPI_MODE0);
+
+void setup()
+{
+  Serial.begin(115200);
+  SPISetting(3, 0, 2);
+  ChipSelect(1);
+
+}
+
+void loop()
+{
+  Serial.println(ADC(7 , 1));
+}
+int ADC(int CH , int CS)
+{
+  SPI.beginTransaction(settings);
+  digitalWrite(CS, LOW);
+  SPI.transfer(0b00000110 + (CH >> 2));
+  byte HIGHbyte = SPI.transfer(0b00000000 + ((CH & 0b011) << 6));
+  byte LOWbyte = SPI.transfer(0x00);
+  digitalWrite(CS, HIGH);
+  SPI.endTransaction();
+  int val = ((HIGHbyte & 0x0F) << 8) + LOWbyte;
+  return val;
+}
+void SPISetting(int TX  , int RX , int SCK)
+{
+  SPI.setRX(0);
+  SPI.setTX(3);
+  SPI.setSCK(2);
+  SPI.begin();
+}
+void ChipSelect(int CSPin)
+{
+  pinMode(CSPin , OUTPUT);
+  digitalWrite(CSPin, HIGH);
+}</p>
+                                <p>先ほども言ったように、Raspberry Pi PicoのSPI通信にはめんどくさい仕様が多くあります。SPISettingsのインスタンスを作成しないといけなかったり、setTX , setRXでSPI通信に使うピン設定したり。</p>
+                                <p>プログラマーはプログラムで語れという言葉に従って、詳しい説明は省きます。ADC関数の引数を0~7で変更することで、チャンネルを変更できます。気分が載ったらプログラムの解説も載せます。</p>
                             </div>
                         </div>
-
-                        <div class="textleft"><div class="text"><div class="text"><div class="text"><h3 id="things">▼何をしているか</h3></div></div></div></div>
-
-                        <div class="backcolor2">
-                            <div class="text">
-                                <p>・プログラム（Unity）</p>
-                                <p>・プログラム（ロボット）</p>
-                                <p>・新しいツール、デバイスの検証</p>
-                                <p>・DTM…？</p>
-                                <p>・回路制作</p>
-                                <p>・CAD</p>
-                                <p>下に行くほどあんまりやりませんが…こんなことしてます。</p>
-                            </div>
-                        </div>
-
-                        <div class="textleft"><div class="text"><div class="text"><div class="text"><h3 id="env">▼作業環境</h3></div></div></div></div>
-
-                        <div class="backcolor2">
-                            <div class="text">
-                                <p>【PCスペック】</p>
-                                <table width="1400">
-                                    <tr>
-                                        <td>
-                                            PC
-                                        </td>
-                                        <td>
-                                            ThinkPad
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            OS
-                                        </td>
-                                        <td>
-                                            Windows11 Pro
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            CPU
-                                        </td>
-                                        <td>
-                                            Intel Core i7 8550
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            メモリ
-                                        </td>
-                                        <td>
-                                            16GB
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            GPU
-                                        </td>
-                                        <td>
-                                            Intel UHD Graphics 620
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            ストレージ
-                                        </td>
-                                        <td>
-                                            SSD Crucial 1TB
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="textleft"><div class="text"><div class="text"><div class="text"><h3 id="msg">▼連絡</h3></div></div></div></div>
-
-                        <div class="backcolor2">
-                            <div class="text">
-                                <p>当サイトにコメント機能等は存在しないため、連絡を行う場合は以下のどちらかを利用してください。</p>
-                                <p>Twitter</p>
-                                <a href="https://Twitter.com/TheGrimReape95"><img src="MainMaterials/Twitter.jpg" alt="Twitter" width="400px"></a>
-                                <div class="nextline"></div>
-                                <p>Discord</p>
-                                <p>weizu_sann</p>
-
-                            </div>
-                        </div>
-
-                        <div class="textleft"><div class="text"><div class="text"><div class="text"><h3 id="prof">▼プロフィール</h3></div></div></div></div>
-
-                        <div class="backcolor2">
-                            <div class="text">
-                                <!-- <img src="MainMaterials/Twitter.jpg" alt="Twitter" width="400px"></a> -->
-                                <h2>■ 管理人</h2><h3>きさらぎ</h3>
-                                <p>きさらぎだったりかえでだったりグリムリーパーだったりウェイズだったりする人。</p>
-                                <p>自分だけの人型ロボットを開発することを夢見ていろいろやってる。</p>
-                                <p>ポケモントレーナー兼エンジニア。</p>
-                                <p>最近ようやくエンジニアが板についてきた</p>
-
-                            </div>
-                        </div>
-
-                        <div class="textleft"><div class="text"><div class="text"><div class="text"><h3 id="link">▼リンク</h3></div></div></div></div>
-
-                        <div class="backcolor2">
-                            <div class="text">
-                                <p>当サイトはリンクフリーです。</p>
-                                <p>※トップページ以外はURLが変更する場合がありますので、 トップページへのリンクを推奨します。</p>
-                                <!-- <a href="https://Twitter.com/TheGrimReape95"><img src="MainMaterials/Twitter.jpg" alt="Twitter" width="400px"></a> -->
-                                <div class="backcolor3">
-                                    <h4>サイト情報</h4>
-                                    <table width="1300px">
-                                        <tr>
-                                            <td>当サイトのバナー</td>
-                                        </tr>
-                                        <tr>
-                                            <td>サイト名：</td>
-                                            <td><img src="MainMaterials/bannar.png"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>きさらぎ工房</td>
-                                            <td>200*40px</td>
-                                        </tr>
-                                        <tr>
-                                            <td>管理者名：</td>
-                                        </tr>
-                                        <tr>
-                                            <td>きさらぎ</td>
-                                        </tr>
-                                        <tr>
-                                            <td>URL：</td>
-                                        </tr>
-                                        <tr>
-                                            <td><a href="https://weizusann.github.io/KisaragiKobo/">https://weizusann.github.io/KisaragiKobo/</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td>リンクの仕方：</td>
-                                        </tr>
-                                        <tr>
-                                            <td><textarea name="waylink" cols="50" rows="6" readonly class="copyonlyTextarea">
-<a href="https://weizusann.github.io/KisaragiKobo/">
-<img src="https://raw.githubusercontent.com/weizuSANN/KisaragiKobo/main/docs/MainMaterials/bannar.png" alt="きさらぎ工房">
-</a></textarea></td>
-                                            <!-- <td><pre><code>
-                                                "<a href="https://weizusann.github.io/KisaragiKobo/">
-                                                <img src="https://raw.githubusercontent.com/weizuSANN/KisaragiKobo/main/docs/MainMaterials/bannar.png" alt="きさらぎ工房">
-                                                </a>"
-                                            </code></pre></td> -->
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="nextline"></div>
-                                <h4>■ 相互リンクについて</h4>
-                                <p>・リンクの報告をしてくださったうえで、ご要望であればこちらからもリンクさせていただきます。</p>
-                                <div class="nextline"></div>
-
-                            </div>
-                        </div>
-                        <div class="nextline"></div>
-                        <div class="nextline"></div>
-                        <div class="nextline"></div>
-                        <div class="nextline"></div>
                     </div>
-                    <div class="nextline"></div>
-                    <div class="nextline"></div>
-                    <div class="nextline"></div>
-                    <div class="nextline"></div>
-                    <div class="nextline"></div>
-                    <div class="nextline"></div>
-                    <div class="nextline"></div>
                 </div>
                 <a href="#">
                     ページ最上部へ戻る
